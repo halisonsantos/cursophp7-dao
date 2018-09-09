@@ -9,17 +9,17 @@ class Sql extends PDO {
 		$this->conn = new PDO("mysql:host=localhost;dbname=dbphp7","root","");
 	}
 	//função para que outros métudos utilizem a associação dos valores com os parâmetros
-	private function setParams($statment, $parameters = array()){
+	private function setParams($statement, $parameters = array()){
 		//associar os valores com os parametros
 		foreach ($parameters as $key => $value) {
 			//chamando o método que foi criado  que associa valor de um parâmetro
-			$this->setParam($key, $value);
+			$this->setParam($statement, $key, $value);
 		
 		}
 	}
 	//Associando o valore de um parâmentro 
-	private function setParam($statment, $key, $value){
-		$statment->bindParam($key, $value);
+	private function setParam($statement, $key, $value){
+		$statement->bindParam($key, $value);
 	}
 
 	//executar os comandos sql
