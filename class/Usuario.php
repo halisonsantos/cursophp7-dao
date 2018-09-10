@@ -45,13 +45,8 @@ class Usuario {
 		//verifica se existe algum registro
 		// pode usar também if(isset($results[0]))
 		if (count($results) > 0){
-			//adicionando o resultado da primeira linha e adicionar no $row
-			$row = $results[0];
-			//pegar os resultados e mandar para os setters
-			$this->setIdusuario($row['idusuario']);
-			$this->setDeslogin($row['deslogin']);
-			$this->setDessenha($row['dessenha']);
-			$this->setDtcadastro(new DateTime($row['dtcadastro'])); //DateTime já coloca no padrão de horário do banco
+
+			$this->setData($results[0]);
 		}
 	}
 	//Método que tras uma lista de usuário é estático
@@ -81,21 +76,54 @@ class Usuario {
 		//verifica se existe algum registro
 		// pode usar também if(isset($results[0]))
 		if (count($results) > 0){
-			//adicionando o resultado da primeira linha e adicionar no $row
-			$row = $results[0];
-			//pegar os resultados e mandar para os setters
-			$this->setIdusuario($row['idusuario']);
-			$this->setDeslogin($row['deslogin']);
-			$this->setDessenha($row['dessenha']);
-			$this->setDtcadastro(new DateTime($row['dtcadastro'])); //DateTime já coloca no padrão de horário do banco
+			//pegar os resultados e mandar para os setters que foi chamado da função setData
+			$this->setData($results[0]);
 		}else{
 
-			throw new Exception("Login e/ou senha inválidos.");
-			
+			throw new Exception("Login e/ou senha inválidos.");			
 		}
-
-
 	 }
+	 //
+	public function setData($data){
+		//pegar os resultados e mandar para os setters
+		$this->setIdusuario($data['idusuario']);
+		$this->setDeslogin($data['deslogin']);
+		$this->setDessenha($data['dessenha']);
+		$this->setDtcadastro(new DateTime($data['dtcadastro'])); //DateTime já coloca no padrão de horário do banco
+
+	}
+	//Inserir um novo usuário
+	public function insert(){
+		$sql = new Sql();
+		//Para criar uma procedure e voltar um id
+		$results = $sql->select("CALL sp_usuarios_insert(:LOGIN, :PASSWORD)", array(
+				':LOGIN'=>$this->getDeslogin(),
+				':PASSWORD'=>$this->getDessenha()
+			));
+			if (count($results) > 0){
+				$this->setData($results[0]);
+			}
+	}
+	//criando um construtor para quando for instanciar um novo objeto Usuário já inserir login e senha
+	//os parametros são iniciado com vazio, toda vez que chamar a classe Usuario terá que passar esses valores, para não afetar o que já foi feito, se chamar o vazio será preenchido se não chamar vai ta vazio para não dar erro
+	public function __construct($login = "", $password = ""){
+		$this->setDeslogin($login);
+		$this->setDessenha($password);
+	}
+	//Fazendo um método de atualização
+	public function update($login, $password){
+		//definir as variáveis dentro do objetos
+		$this->setDeslogin($login);
+		$this->setDessenha($password);
+
+		$sql = new Sql();
+		$sql->query("UPDATE tb_usuarios SET deslogin = :LOGIN, deslogin = :PASSWORD WHERE idusuario = :ID",array(
+			':LOGIN'=>$this->getDessenha(),
+			':PASSWORD'=>$this->getDessenha(),
+			':ID'=>$this->getIdusuario()
+		));
+
+	}
 
 	//para mostrar os dados do objeto
 	public function __toString(){
