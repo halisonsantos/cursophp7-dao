@@ -1,16 +1,27 @@
 <?php 
 //Chamando o arquivo de configuração
 require_once("config.php");
-
 $usuario = new Usuario();
 //Carregar o usuario primeiro
-$usuario->loadbyId(8);
-//realiza o processo de update passando o id 7
-$usuario->update("teste","¨&*(@#");
+$usuario->loadbyId(8); 
+//Chama o método delete
+$usuario->delete();
 
 echo $usuario;
 
 
+
+
+
+/*=================Alerar usuario============
+$usuario = new Usuario();
+//Carregar o usuario primeiro
+$usuario->loadbyId(8);
+//realiza o processo de update passando o id 7
+$usuario->update("teste","¨&*(@# ");
+
+echo $usuario;
+*/
 
 /*====criando um usuário=====
 $aluno = new Usuario("aluno","Senha");

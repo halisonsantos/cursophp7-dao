@@ -104,12 +104,6 @@ class Usuario {
 				$this->setData($results[0]);
 			}
 	}
-	//criando um construtor para quando for instanciar um novo objeto Usuário já inserir login e senha
-	//os parametros são iniciado com vazio, toda vez que chamar a classe Usuario terá que passar esses valores, para não afetar o que já foi feito, se chamar o vazio será preenchido se não chamar vai ta vazio para não dar erro
-	public function __construct($login = "", $password = ""){
-		$this->setDeslogin($login);
-		$this->setDessenha($password);
-	}
 	//Fazendo um método de atualização
 	public function update($login, $password){
 		//definir as variáveis dentro do objetos
@@ -123,6 +117,25 @@ class Usuario {
 			':ID'=>$this->getIdusuario()
 		));
 
+	}
+	public function delete(){
+		$sql = new Sql();
+
+		$sql->query("DELETE FROM tb_usuarios WHERE idusuario = :ID",array(
+			':ID'=>$this->getIdusuario()
+		));
+
+		$this->setIdusuario(0);
+		$this->setDeslogin("");
+		$this->setDessenha("");
+		$this->setDtcadastro(new DateTime());
+
+	}
+	//criando um construtor para quando for instanciar um novo objeto Usuário já inserir login e senha
+	//os parametros são iniciado com vazio, toda vez que chamar a classe Usuario terá que passar esses valores, para não afetar o que já foi feito, se chamar o vazio será preenchido se não chamar vai ta vazio para não dar erro
+	public function __construct($login = "", $password = ""){
+		$this->setDeslogin($login);
+		$this->setDessenha($password);
 	}
 
 	//para mostrar os dados do objeto
