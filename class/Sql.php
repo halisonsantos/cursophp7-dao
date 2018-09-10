@@ -7,6 +7,8 @@ class Sql extends PDO {
 	public function __construct(){
 
 		$this->conn = new PDO("mysql:host=localhost;dbname=dbphp7","root","");
+		//Não estava exibindo resultado no "echo json_encode($lista);" porque há conteúdo acentuado no BD. Então acrescentei esta linha na função __construct
+		$this->conn->exec("set names utf8");
 	}
 	//função para que outros métudos utilizem a associação dos valores com os parâmetros
 	private function setParams($statement, $parameters = array()){

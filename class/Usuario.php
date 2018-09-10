@@ -54,6 +54,49 @@ class Usuario {
 			$this->setDtcadastro(new DateTime($row['dtcadastro'])); //DateTime já coloca no padrão de horário do banco
 		}
 	}
+	//Método que tras uma lista de usuário é estático
+	public static function getList(){
+		//instancia a classe Sql
+		$sql = new Sql();
+		//retorna o select 
+		return $sql->select("SELECT * FROM tb_usuarios ORDER BY deslogin;");
+	}
+	public static function search($login){
+		//instancia a classe Sql
+		$sql = new Sql();
+		//retorna o select com o nome parecido
+		return $sql->select("SELECT * FROM tb_usuarios WHERE deslogin LIKE :SEARCH ORDER BY deslogin", array(
+				':SEARCH'=>"%".$login."%"
+			));
+	}
+	//Uma busca autenticada conferindo se login e senha conferem para poder retornar o usuário
+	 public function login($login, $password){
+	 	//instanciando um objeto
+		$sql = new Sql();
+		//realizando o select
+		$results = $sql->select("SELECT * FROM tb_usuarios WHERE deslogin = :LOGIN AND dessenha = :PASSWORD",array(
+			":LOGIN" => $login,
+			":PASSWORD"=> $password
+		));
+		//verifica se existe algum registro
+		// pode usar também if(isset($results[0]))
+		if (count($results) > 0){
+			//adicionando o resultado da primeira linha e adicionar no $row
+			$row = $results[0];
+			//pegar os resultados e mandar para os setters
+			$this->setIdusuario($row['idusuario']);
+			$this->setDeslogin($row['deslogin']);
+			$this->setDessenha($row['dessenha']);
+			$this->setDtcadastro(new DateTime($row['dtcadastro'])); //DateTime já coloca no padrão de horário do banco
+		}else{
+
+			throw new Exception("Login e/ou senha inválidos.");
+			
+		}
+
+
+	 }
+
 	//para mostrar os dados do objeto
 	public function __toString(){
 		//retornando formato json
